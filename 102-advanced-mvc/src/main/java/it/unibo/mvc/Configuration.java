@@ -103,7 +103,7 @@ public final class Configuration {
          * @return a configuration
          */
         public final Configuration build() {
-            if (consumed) {
+            if (consumed){
                 throw new IllegalStateException("The builder can only be used once");
             }
             consumed = true;

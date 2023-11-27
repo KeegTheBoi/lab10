@@ -28,7 +28,7 @@ public final class DrawNumberViewImpl implements DrawNumberView {
     /**
      * 
      */
-    public DrawNumberViewImpl() {
+    public DrawNumberViewImpl(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(new JPanel(new BorderLayout()));
         final JPanel pNorth = new JPanel(new FlowLayout());
@@ -46,7 +46,7 @@ public final class DrawNumberViewImpl implements DrawNumberView {
         bGo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                try {
+                try{
                     observer.newAttempt(Integer.parseInt(tNumber.getText()));
                 } catch (NumberFormatException exception) {
                     JOptionPane.showMessageDialog(frame, "An integer please..");
@@ -63,7 +63,7 @@ public final class DrawNumberViewImpl implements DrawNumberView {
         });
         bReset.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(final ActionEvent e) {
+            public void actionPerformed(final ActionEvent e){
                 if (confirmDialog("Confirm resetting?", "Reset")) {
                     observer.resetGame();
                 }

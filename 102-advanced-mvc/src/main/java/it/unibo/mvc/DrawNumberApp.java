@@ -6,15 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  */
 public final class DrawNumberApp implements DrawNumberViewObserver {
     private static final URL DEFAULT_CONFIG_FILE = ClassLoader.getSystemResource("config.yml");
+    private static final String DEFAULT_LOGGER_PATH = System.getProperty("user.home") + File.separator + "logger.txt";
 
     private final DrawNumber model;
     private final List<DrawNumberView> views;
@@ -44,18 +46,22 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
         
     }
 
-    private Configuration setCongfigElements(final URL yamlFile) throws FileNotFoundException, IOException{
+    private Configuration setCongfigElements(final URL yamlFile) throws FileNotFoundException, IOException, NoSuchFieldException, SecurityException, IllegalAccessException {
+        List<String> fields = Arrays.asList(Configuration.class.getDeclaredFields()).stream().map(f -> f.getName()).toList();
         Objects.requireNonNull(yamlFile);
         final BufferedReader lines = new BufferedReader(new FileReader(new File(yamlFile.getFile())));
         String line;
-        final List<Integer> values = new ArrayList<>();
-        while((line = lines.readLine()) != null){
-            values.add(Integer.parseInt(line.split(": ", 2)[1]));
+        final Map<String, Integer> values = new HashMap<>();
+        while((line = lines.readLine()) != null) {
+            values.put(line.split(": ", 2)[0],Integer.parseInt(line.split(": ", 2)[1]));
+        }        
+        if(values.keySet().stream().filter(y -> !fields.contains(y)).count() > 0) {
+            throw new IllegalAccessException("campo non esistente");
         }
         Configuration.Builder configBuilder = new Configuration.Builder();
-        configBuilder.setMin(values.get(0));
-        configBuilder.setMax(values.get(1));
-        configBuilder.setAttempts(values.get(2));
+        configBuilder.setMin(values.get("minimum"));
+        configBuilder.setMax(values.get("maximum"));
+        configBuilder.setAttempts(values.get("attempts"));
         return configBuilder.build();
     }
 
@@ -95,8 +101,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      * @throws FileNotFoundException 
      */
     public static void main(final String... args) throws FileNotFoundException {
-
-        new DrawNumberApp(new DrawNumberViewImpl(), new PrintStreamView(System.out));
+        new DrawNumberApp(new DrawNumberViewImpl(), new DrawNumberViewImpl(), new PrintStreamView(DEFAULT_LOGGER_PATH), new PrintStreamView(System.out));
     }
 
 }

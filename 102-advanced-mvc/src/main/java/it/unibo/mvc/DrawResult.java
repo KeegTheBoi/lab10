@@ -29,7 +29,6 @@ public enum DrawResult {
     DrawResult(final String message) {
         this.message = message;
     }
-
     /**
      * @return a description of the draw result
      */

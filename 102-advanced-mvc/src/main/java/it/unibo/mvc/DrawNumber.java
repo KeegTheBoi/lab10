@@ -5,12 +5,10 @@ package it.unibo.mvc;
  *
  */
 public interface DrawNumber {
-
     /**
      * resets the game.
      */
     void reset();
-
     /**
      * Guesses a number.
      * 
